@@ -1,0 +1,81 @@
+:root {
+  --primary: #4f46e5;
+  --secondary: #eef2ff;
+  --dark: #14213d;
+  --muted: #6b7280;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  color: var(--dark);
+}
+
+section {
+  scroll-margin-top: 90px;
+}
+
+.bg-light {
+  background-color: #faf9ff !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #7c3aed);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #4338ca, #6d28d9);
+}
+
+.hero-card {
+  min-height: 420px;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-overlay {
+  background: linear-gradient(90deg, rgba(20, 33, 61, 0.82), rgba(79, 70, 229, 0.35));
+}
+
+.video-frame {
+  aspect-ratio: 16/9;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.video-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.class-card {
+  border-radius: 20px;
+  border: 1px solid #e5e7eb;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.class-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.1);
+}
+
+.testimonial-card {
+  background: linear-gradient(135deg, #ffffff, #f7f7ff);
+  border-radius: 20px;
+  min-height: 220px;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.2);
+}
+
+.status-success {
+  color: #047857;
+}
+
+.status-error {
+  color: #b91c1c;
+}
