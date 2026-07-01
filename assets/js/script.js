@@ -166,10 +166,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   function populateClassOptions(items) {
-    classSelect.innerHTML = items.length
-      ? items.map((item) => `<option value="${item.id}">${item.title}</option>`).join('')
-      : '<option value="">No classes available</option>';
-  }
+  classSelect.innerHTML =
+    '<option value="">Select a class</option>' +
+    items.map(item =>
+      `<option value="${item.id}">${item.title}</option>`
+    ).join('');
+}
 
   function validateNameField() {
     const value = nameInput.value.trim();

@@ -1,11 +1,11 @@
 const firebaseConfig = {
-  apiKey: '',
-  authDomain: '',
-  projectId: '',
-  storageBucket: '',
-  messagingSenderId: '',
-  appId: ''
-};
+    apiKey: "AIzaSyCVRyZsbLqC6EB8Z57ijQOvhL8TXnqLoAw",
+    authDomain: "responsive-yoga-webinar.firebaseapp.com",
+    projectId: "responsive-yoga-webinar",
+    storageBucket: "responsive-yoga-webinar.firebasestorage.app",
+    messagingSenderId: "927472085270",
+    appId: "1:927472085270:web:beb6ab633cf22ee87d4837"
+  };
 
 let firestoreDb = null;
 
