@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   const classSelect = document.getElementById('classId');
   const registrationForm = document.getElementById('registrationForm');
   const formMessage = document.getElementById('formMessage');
+  
+  const nameInput = document.getElementById('name');
+  const phoneInput = document.getElementById('phone');
+  const emailInput = document.getElementById('email');
 
   const { banners, testimonials, videos, classes } = await window.webinarApi.loadWebinarData();
 
@@ -15,8 +19,36 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderTestimonials(testimonials);
   populateClassOptions(classes);
 
+  // Real-time validation for name
+  nameInput.addEventListener('blur', () => validateNameField());
+  nameInput.addEventListener('input', () => validateNameField());
+
+  // Real-time validation for phone
+  phoneInput.addEventListener('blur', () => validatePhoneField());
+  phoneInput.addEventListener('input', () => {
+    phoneInput.value = phoneInput.value.replace(/[^0-9]/g, '');
+    if (phoneInput.value.length <= 10) {
+      validatePhoneField();
+    }
+  });
+
+  // Real-time validation for email
+  emailInput.addEventListener('blur', () => validateEmailField());
+  emailInput.addEventListener('input', () => validateEmailField());
+
+  // Real-time validation for class
+  classSelect.addEventListener('change', () => validateClassField());
+
   registrationForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+    
+    const allFieldsValid = validateNameField() && validatePhoneField() && validateEmailField() && validateClassField();
+    
+    if (!allFieldsValid) {
+      showMessage('Please fix all errors before submitting.', false);
+      return;
+    }
+
     const formData = new FormData(registrationForm);
     const registration = {
       name: formData.get('name')?.toString().trim() || '',
@@ -36,6 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (result.success) {
       showMessage(result.message || 'Registration saved successfully.', true);
       registrationForm.reset();
+      clearFieldErrors();
     } else {
       showMessage(result.message || 'Unable to save registration. Please try again.', false);
     }
@@ -138,10 +171,69 @@ document.addEventListener('DOMContentLoaded', async () => {
       : '<option value="">No classes available</option>';
   }
 
+  function validateNameField() {
+    const value = nameInput.value.trim();
+    const isValid = value.length >= 3 && /^[a-zA-Z\s]*$/.test(value) && value.length <= 50;
+    setFieldError(nameInput, !isValid, 'Name must be 3-50 characters and contain only letters and spaces');
+    return isValid;
+  }
+
+  function validatePhoneField() {
+    const value = phoneInput.value.trim();
+    const isValid = /^[6-9]\d{9}$/.test(value);
+    setFieldError(phoneInput, !isValid, 'Phone must be 10 digits starting with 6-9');
+    return isValid;
+  }
+
+  function validateEmailField() {
+    const value = emailInput.value.trim();
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value) && value.length <= 100;
+    setFieldError(emailInput, !isValid, 'Enter a valid email address');
+    return isValid;
+  }
+
+  function validateClassField() {
+    const value = classSelect.value;
+    const isValid = Boolean(value);
+    setFieldError(classSelect, !isValid, 'Please select a class');
+    return isValid;
+  }
+
+  function setFieldError(field, hasError, errorMessage) {
+    if (hasError) {
+      field.classList.add('is-invalid');
+      field.classList.remove('is-valid');
+      let errorDiv = field.nextElementSibling;
+      if (!errorDiv || !errorDiv.classList.contains('invalid-feedback')) {
+        errorDiv = document.createElement('div');
+        errorDiv.className = 'invalid-feedback d-block';
+        field.parentNode.insertBefore(errorDiv, field.nextSibling);
+      }
+      errorDiv.textContent = errorMessage;
+    } else {
+      field.classList.remove('is-invalid');
+      field.classList.add('is-valid');
+      const errorDiv = field.nextElementSibling;
+      if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+        errorDiv.remove();
+      }
+    }
+  }
+
+  function clearFieldErrors() {
+    [nameInput, phoneInput, emailInput, classSelect].forEach(field => {
+      field.classList.remove('is-invalid', 'is-valid');
+      const errorDiv = field.nextElementSibling;
+      if (errorDiv && errorDiv.classList.contains('invalid-feedback')) {
+        errorDiv.remove();
+      }
+    });
+  }
+
   function validateRegistration(data) {
-    const nameOk = data.name.length >= 2;
-    const phoneOk = /^\d{10}$/.test(data.phone);
-    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email);
+    const nameOk = data.name.length >= 3 && /^[a-zA-Z\s]*$/.test(data.name) && data.name.length <= 50;
+    const phoneOk = /^[6-9]\d{9}$/.test(data.phone);
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(data.email) && data.email.length <= 100;
     const classOk = Boolean(data.class_id);
     return nameOk && phoneOk && emailOk && classOk;
   }
